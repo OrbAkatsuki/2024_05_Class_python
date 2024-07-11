@@ -5,3 +5,7 @@ requests
 matplotlib
 numpy
 pandas
+openpyxl
+yfinance
+pandas-datareader
+jinja2
