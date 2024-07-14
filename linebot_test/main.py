@@ -35,15 +35,16 @@ def get_gemini_response(prompt):
     response = model.generate_content(prompt)
     return response.text
 
-def get_chatgpt_response(prompt):
-    response = openai.ChatCompletion.create(
+def get_chatgpt_response(user_message):
+    client = openai.OpenAI()
+    response = client.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=[
             {"role": "system", "content": "You are a helpful assistant."},
-            {"role": "user", "content": prompt}
+            {"role": "user", "content": user_message}
         ]
     )
-    return response.choices[0].message['content']
+    return response.choices[0].message.content
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
