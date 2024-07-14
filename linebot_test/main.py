@@ -12,7 +12,8 @@ load_dotenv()
 app = Flask(__name__)
 line_bot_api = LineBotApi(os.environ["CHANNEL_ACCESS_TOKEN"])
 handler = WebhookHandler(os.environ["CHANNEL_SECRET"])
-client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+
+
 
 @app.route("/")
 def index():
@@ -39,7 +40,7 @@ def get_gemini_response(prompt):
     return content
 
 def get_chatgpt_response(user_message):
-    client = openai.OpenAI()
+    client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
     response = client.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=[
