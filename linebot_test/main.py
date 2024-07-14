@@ -4,7 +4,7 @@ from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import *
 import google.generativeai as genai
-import openai
+from openai import OpenAI
 import os
 
 load_dotenv()
@@ -12,7 +12,7 @@ load_dotenv()
 app = Flask(__name__)
 line_bot_api = LineBotApi(os.environ["CHANNEL_ACCESS_TOKEN"])
 handler = WebhookHandler(os.environ["CHANNEL_SECRET"])
-openai.api_key = os.environ["OPENAI_API_KEY"]
+client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
 @app.route("/")
 def index():
@@ -33,7 +33,10 @@ def get_gemini_response(prompt):
     genai.configure(api_key=os.environ["Gemini_API_KEY"])
     model = genai.GenerativeModel(model_name="gemini-1.5-flash")
     response = model.generate_content(prompt)
-    return response.text
+    content = ""
+    for oneline in str(response.text).split('\n'):
+        content += f'<p>{oneline}</p>'
+    return content
 
 def get_chatgpt_response(user_message):
     client = openai.OpenAI()
