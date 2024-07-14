@@ -4,7 +4,7 @@ from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import *
 import google.generativeai as genai
-from openai import OpenAI
+import openai
 import os
 
 load_dotenv()
@@ -40,15 +40,15 @@ def get_gemini_response(prompt):
     return content
 
 def get_chatgpt_response(user_message):
-    client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
-    response = client.chat.completions.create(
+    openai.api_key = os.environ.get("OPENAI_API_KEY")
+    response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=[
             {"role": "system", "content": "You are a helpful assistant."},
             {"role": "user", "content": user_message}
         ]
     )
-    return response.choices[0].message.content
+    return response.choices[0].message['content']
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
