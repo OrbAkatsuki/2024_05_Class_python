@@ -4,7 +4,7 @@ from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import *
 import google.generativeai as genai
-from openai import OpenAI
+#from openai import OpenAI
 import os
 
 load_dotenv()
@@ -39,7 +39,7 @@ def get_gemini_response(prompt):
         content += f'<p>{oneline}</p>'
     return content
 
-def get_chatgpt_response(prompt):
+#def get_chatgpt_response(prompt):
     client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
     response = client.chat.completions.create(
         model="gpt-3.5-turbo",
@@ -56,16 +56,16 @@ def handle_message(event):
     
     # 获取两个AI的回答
     gemini_response = get_gemini_response(user_message)
-    chatgpt_response = get_chatgpt_response(user_message)
+    #chatgpt_response = get_chatgpt_response(user_message)
     
     # 组合两个AI的回答
-    full_response = f"Gemini 回答：\n\n{gemini_response}\n\n" \
-                    f"ChatGPT 回答：\n\n{chatgpt_response}"
+    full_response = f"Gemini 回答：\n\n{gemini_response}\n\n"
+                    #f"ChatGPT 回答：\n\n{chatgpt_response}"
     
     # 如果组合后的回答超过5000字符（Line的消息长度限制），则分开发送
     if len(full_response) > 5000:
         gemini_message = TextSendMessage(text=f"Gemini 回答：\n\n{gemini_response}")
-        chatgpt_message = TextSendMessage(text=f"ChatGPT 回答：\n\n{chatgpt_response}")
+        #chatgpt_message = TextSendMessage(text=f"ChatGPT 回答：\n\n{chatgpt_response}")
         line_bot_api.reply_message(event.reply_token, [gemini_message, chatgpt_message])
     else:
         message = TextSendMessage(text=full_response)
